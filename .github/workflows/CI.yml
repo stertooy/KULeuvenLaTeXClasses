@@ -7,9 +7,18 @@ on:
 jobs:
 
   compile:
-    name: "Create .pdf file"
+    name: "Compile ${{ matrix.file }}"
     runs-on: ubuntu-latest
-
+    strategy:
+      fail-fast: false
+      matrix:
+        file:
+          - Examples/test_kulakarticle/instructies
+          - Examples/test_kulakbeamer/IntroductieLaTeXPresentatie
+          - Examples/test_kulakposter/PosterLandscape
+          - Examples/test_kulakposter/PosterPortrait
+          - Examples/test_kulakreport/IntroductieLaTeXHandleiding
+        
     steps:
 
       - name: "Get .pdf"
@@ -18,18 +27,13 @@ jobs:
       - name: "Compile"
         uses: xu-cheng/latex-action@v4
         with:
-          root_file: |
-            Examples/test_kulakarticle/instructies.tex
-            Examples/test_kulakbeamer/IntroductieLaTeXPresentatie.tex
-            Examples/test_kulakposter/PosterLandscape.tex
-            Examples/test_kulakposter/PosterPortrait.tex
-            Examples/test_kulakreport/IntroductieLaTeXHandleiding.tex
-          post_compile: mv Examples/test_kulakbeamer/IntroductieLatexPresentatie.pdf ./
+          root_file: "${{ matrix.file }}.tex"
+          work_in_root_file_dir: true
         env:
           TEXINPUTS: ".:./kulak/:"
   
       - name: "Upload"
         uses: actions/upload-artifact@v7
         with:
-          path: "Examples/test_kulakbeamer/IntroductieLatexPresentatie.pdf"
+          path: "${{ matrix.file }}.pdf"
           archive: false
