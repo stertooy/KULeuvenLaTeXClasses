@@ -30,7 +30,7 @@ jobs:
           work_in_root_file_dir: true
           root_file: "${{ matrix.file }}.tex"
         env:
-          TEXINPUTS: ".:./kulak/:"
+          TEXINPUTS: ".:../../kulak/:"
   
       - name: "Upload"
         uses: actions/upload-artifact@v7
