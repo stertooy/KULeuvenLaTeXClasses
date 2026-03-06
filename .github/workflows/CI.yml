@@ -1,0 +1,35 @@
+name: Compile
+on:
+  - push
+  - pull_request
+  - workflow_dispatch
+
+jobs:
+
+  compile:
+    name: "Create .pdf file"
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: "Get .pdf"
+        uses: actions/checkout@v6
+        
+      - name: "Compile"
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: |
+            Examples/test_kulakarticle/instructies.tex
+            Examples/test_kulakbeamer/IntroductieLaTeXPresentatie.tex
+            Examples/test_kulakposter/PosterLandscape.tex
+            Examples/test_kulakposter/PosterPortrait.tex
+            Examples/test_kulakreport/IntroductieLaTeXHandleiding.tex
+          post_compile: mv Examples/test_kulakbeamer/IntroductieLatexPresentatie.pdf ./
+        env:
+          TEXINPUTS: ".:./kulak/:"
+  
+      - name: "Upload"
+        uses: actions/upload-artifact@v7
+        with:
+          path: "Examples/test_kulakbeamer/IntroductieLatexPresentatie.pdf"
+          archive: false
